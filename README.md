@@ -1,5 +1,7 @@
 # Slipstream (Rust)
 
+> **Fork of [Mygod/slipstream-rust](https://github.com/Mygod/slipstream-rust)** — adds Docker, docker-compose, and GitHub Container Registry workflow.
+
 Slipstream is a high-performance DNS tunnel that carries QUIC packets over DNS queries and responses.
 This repository hosts the Rust rewrite of the [original C implementation](https://github.com/EndPositive/slipstream).
 
