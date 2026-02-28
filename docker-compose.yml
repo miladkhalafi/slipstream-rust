@@ -1,0 +1,51 @@
+# Slipstream DNS tunnel - Docker Compose
+# Demo: client (TCP 7000) <-> server (DNS 8853) <-> target (TCP 5201 echo)
+#
+# Usage:
+#   docker compose up --build -d
+#   echo "hello" | nc localhost 7000   # data flows through DNS tunnel to echo server
+#
+# Requires fixtures/certs/ for TLS (test certs included in repo).
+
+services:
+  target:
+    image: alpine:3.19
+    command: ["sh", "-c", "apk add --no-cache socat && socat TCP-LISTEN:5201,fork EXEC:/bin/cat"]
+    networks:
+      - slipstream
+
+  server:
+    build: .
+    command: >
+      slipstream-server
+      --dns-listen-port 8853
+      --target-address target:5201
+      --domain example.com
+      --cert /certs/cert.pem
+      --key /certs/key.pem
+    volumes:
+      - ./fixtures/certs:/certs:ro
+    ports:
+      - "8853:8853/udp"
+    depends_on:
+      - target
+    networks:
+      - slipstream
+
+  client:
+    build: .
+    command: >
+      slipstream-client
+      --tcp-listen-port 7000
+      --authoritative server:8853
+      --domain example.com
+    ports:
+      - "7000:7000"
+    depends_on:
+      - server
+    networks:
+      - slipstream
+
+networks:
+  slipstream:
+    driver: bridge

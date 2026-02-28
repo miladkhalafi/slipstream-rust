@@ -1,0 +1,20 @@
+# Build artifacts (we build fresh in container)
+/target/
+/.picoquic-build/
+/.interop/
+/tools/vector_gen/build/
+
+# Version control (keep .git for submodule init in Dockerfile)
+.gitignore
+.gitmodules
+
+# IDE and misc
+.idea/
+__pycache__/
+**/*.rs.bk
+
+# CI and docs (not needed for build)
+.github/
+docs/
+*.md
+!README.md
