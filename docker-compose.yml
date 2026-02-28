@@ -2,10 +2,10 @@
 # Demo: client (TCP 7000) <-> server (DNS 8853) <-> target (TCP 5201 echo)
 #
 # Usage:
-#   docker compose up --build -d
+#   docker compose up -d
 #   echo "hello" | nc localhost 7000   # data flows through DNS tunnel to echo server
 #
-# Requires fixtures/certs/ for TLS (test certs included in repo).
+# Uses GHCR image (ghcr.io/owner/repo:main). Requires fixtures/certs/ for TLS.
 
 services:
   target:
@@ -15,7 +15,7 @@ services:
       - slipstream
 
   server:
-    build: .
+    image: ghcr.io/miladkhalafi/slipstream-rust:main
     command: >
       slipstream-server
       --dns-listen-port 8853
@@ -33,7 +33,7 @@ services:
       - slipstream
 
   client:
-    build: .
+    image: ghcr.io/miladkhalafi/slipstream-rust:main
     command: >
       slipstream-client
       --tcp-listen-port 7000
